@@ -1,0 +1,55 @@
+- hosts: machine1
+  become: yes
+
+  tasks:
+    - name: Install Zsh
+      apt:
+        name: zsh
+        state: present
+        update_cache: yes
+
+    - name: Install curl
+      apt:
+        name: curl
+        state: present
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install Oh My Zsh (Non-Interactive)
+      shell: |
+        export RUNZSH=no  # Prevents Oh My Zsh from automatically changing the shell and restarting it
+        export KEEP_ZSHRC=yes  # Prevents Oh My Zsh from overwriting the existing .zshrc file
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      args:
+        executable: /bin/bash
+      environment:
+        ZSH: "{{ ansible_env.HOME }}/.oh-my-zsh"
+        ZSH_CUSTOM: "{{ ansible_env.HOME }}/.oh-my-zsh/custom"
+      changed_when: false
+
+    - name: Clone zsh-autosuggestions plugin
+      git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions.git
+        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+        version: master
+
+    - name: Clone zsh-syntax-highlighting plugin
+      git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+        version: master
+
+    - name: Update .zshrc with plugins
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        regexp: '^plugins=\(([^)]*)\)'
+        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting)'
+        backrefs: yes
+
+    - name: Change default shell to zsh
+      shell: chsh -s $(which zsh) "{{ ansible_env.USER }}"
+      args:
+        executable: /bin/bash
