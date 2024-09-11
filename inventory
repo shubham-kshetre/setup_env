@@ -1,2 +1,2 @@
 [machine]
-machine1 ansible_port=22 ansible_host=54.197.76.244 ansible_ssh_private_key_file=/home/shubham/Downloads/ubuntu.pem ansible_user=ubuntu
+machine1 ansible_port=22 ansible_host=54.197.76.244 ansible_ssh_private_key_file=/home/shubham/Downloads/coem.pem ansible_user=ubuntu

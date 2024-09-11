@@ -18,6 +18,14 @@
         name: git
         state: present
 
+    - name: Install docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+      tags:
+      - docker
+
     - name: Install Oh My Zsh (Non-Interactive)
       shell: |
         export RUNZSH=no  # Prevents Oh My Zsh from automatically changing the shell and restarting it
