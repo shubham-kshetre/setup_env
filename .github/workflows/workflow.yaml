@@ -31,8 +31,8 @@ jobs:
     - name: Check if variable exists
       id: check-variable
       run: |
-        gh api /repos/${{ github.repository }}/actions/variables | grep "USERNAME"
-
+        existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
+        echo $existing_vars
     # # Step 5: Conditionally create the variable
     # - name: Create repository variable
     #   if: env.create == 'true'
