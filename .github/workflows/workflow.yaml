@@ -14,22 +14,28 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up GitHub CLI
-    - name: Set up GitHub CLI
-      uses: cli/gh-actions@v2
-      with:
-        gh-version: 'latest'  # Optionally specify a version of GitHub CLI if needed
+    - uses: actions4gh/setup-gh@v1
+    - run: gh issue create --body "$BODY"
+    env:
+      GH_REPO: ${{ github.repository }}
+      BODY: Hello world!
 
-    # Step 3: Authenticate GitHub CLI
-    - name: Authenticate GitHub CLI
-      run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
+    # # Step 2: Set up GitHub CLI
+    # - name: Set up GitHub CLI
+    #   uses: cli/gh-actions@v2
+    #   with:
+    #     gh-version: 'latest'  # Optionally specify a version of GitHub CLI if needed
+
+    # # Step 3: Authenticate GitHub CLI
+    # - name: Authenticate GitHub CLI
+    #   run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
     
-    # Step 4: Create the repository variable
-    - name: Create repository variable
-      run: |
-        gh api \
-          --method POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/shubham-kshetre/setup_env/actions/variables \
-          -f "name=USERNAME" -f "value=myuser"
+    # # Step 4: Create the repository variable
+    # - name: Create repository variable
+    #   run: |
+    #     gh api \
+    #       --method POST \
+    #       -H "Accept: application/vnd.github+json" \
+    #       -H "X-GitHub-Api-Version: 2022-11-28" \
+    #       /repos/shubham-kshetre/setup_env/actions/variables \
+    #       -f "name=USERNAME" -f "value=myuser"
