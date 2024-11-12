@@ -34,4 +34,4 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/shubham-kshetre/setup_env/actions/variables \
-          -f "name=USERNAME" -f "value=myrepo"
+          -f "name=NAME" -f "value=agent-k"
