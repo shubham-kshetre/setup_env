@@ -26,12 +26,29 @@ jobs:
     - name: Authenticate GitHub CLI
       run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
     
-    # Step 4: Create the repository variable
+    # Step 4: Check if the variable exists
+    - name: Check if variable exists
+      id: check-variable
+      run: |
+        # Query the list of repository variables
+        existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
+
+        # Check if the variable already exists
+        if [[ -z "$existing_vars" ]]; then
+          echo "Variable does not exist, creating..."
+          echo "create=true" >> $GITHUB_ENV
+        else
+          echo "Variable already exists, skipping creation."
+          echo "create=false" >> $GITHUB_ENV
+        fi
+
+    # Step 5: Conditionally create the variable
     - name: Create repository variable
+      if: env.create == 'true'
       run: |
         gh api \
           --method POST \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/shubham-kshetre/setup_env/actions/variables \
-          -f "name=NAME" -f "value=agent-k"
+          /repos/${{ github.repository }}/actions/variables \
+          -f "name=USERNAME" -f "value=myrepo"
