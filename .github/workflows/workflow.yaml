@@ -31,10 +31,10 @@ jobs:
     - name: Check if variable exists
       id: check-variable
       run: |
-        # Query the list of repository variables
+        # Query the list of repository variables and check if the variable exists
         existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
 
-        # Check if the variable already exists
+        # If the variable does not exist, create it
         if [[ -z "$existing_vars" ]]; then
           echo "Variable does not exist, creating..."
           echo "create=true" >> $GITHUB_ENV
