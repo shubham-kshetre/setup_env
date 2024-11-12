@@ -31,24 +31,15 @@ jobs:
     - name: Check if variable exists
       id: check-variable
       run: |
-        # Query the list of repository variables and check if the variable exists
-        existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
+        gh api /repos/${{ github.repository }}/setup_env/actions/variables
 
-        # If the variable does not exist, create it
-        if [[ -z "$existing_vars" ]]; then
-          echo "Variable does not exist, creating..."
-          echo "create=true" >> $GITHUB_ENV
-        else
-          echo "Variable already exists, skipping creation."
-          echo "create=false" >> $GITHUB_ENV
-
-    # Step 5: Conditionally create the variable
-    - name: Create repository variable
-      if: env.create == 'true'
-      run: |
-        gh api \
-          --method POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/${{ github.repository }}/actions/variables \
-          -f "name=USERNAME" -f "value=myrepo" || echo "Variable already exists, skipping creation."
+    # # Step 5: Conditionally create the variable
+    # - name: Create repository variable
+    #   if: env.create == 'true'
+    #   run: |
+    #     gh api \
+    #       --method POST \
+    #       -H "Accept: application/vnd.github+json" \
+    #       -H "X-GitHub-Api-Version: 2022-11-28" \
+    #       /repos/${{ github.repository }}/actions/variables \
+    #       -f "name=USERNAME" -f "value=myrepo" || echo "Variable already exists, skipping creation."
