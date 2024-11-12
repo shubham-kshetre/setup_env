@@ -10,15 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the repository
+    # Step 1: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up GitHub CLI
-    - name: Set up GitHub CLI
-      uses: cli/gh-actions@v2
-      with:
-        gh-version: 'latest'  # Optionally specify a version of GitHub CLI if needed
+    # Step 2: Install GitHub CLI
+    - name: Install GitHub CLI
+      run: |
+        curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
+        sudo apt update
+        sudo apt install gh
 
     # Step 3: Authenticate GitHub CLI
     - name: Authenticate GitHub CLI
@@ -32,4 +34,4 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/shubham-kshetre/setup_env/actions/variables \
-          -f "name=USERNAME" -f "value=myuser"
+          -f "name=USERNAME" -f "value=myrepo"
