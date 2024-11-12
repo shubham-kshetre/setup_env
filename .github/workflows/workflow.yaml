@@ -31,7 +31,7 @@ jobs:
     - name: Check if variable exists
       id: check-variable
       run: |
-        gh api /repos/${{ github.repository }}/setup_env/actions/variables
+        gh api /repos/${{ github.repository }}/actions/variables
 
     # # Step 5: Conditionally create the variable
     # - name: Create repository variable
