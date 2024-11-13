@@ -28,4 +28,4 @@ jobs:
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
             -d '{"ref": "master"}' \
-            https://api.github.com/repos/${{ github.repository }}/actions/workflows/master-workflow.yml/dispatches
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/workflow.yaml/dispatches
