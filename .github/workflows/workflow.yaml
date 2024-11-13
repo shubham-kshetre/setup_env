@@ -1,12 +1,11 @@
-# .github/workflows/branch-environment.yml
 name: Branch-Specific Workflow
 
 on:
   push:
     branches:
-      - main      # Run this on main branch
-      - staging   # Run this on staging branch
-      - dev       # Run this on dev branch
+      - main      # Trigger this on main branch
+      - staging   # Trigger this on staging branch
+      - dev       # Trigger this on dev branch
 
 jobs:
   deploy:
@@ -15,6 +14,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Debugging GitHub Ref
+        run: echo "GitHub ref is: ${{ github.ref }}"
 
       - name: Set environment based on branch
         run: |
@@ -33,8 +35,6 @@ jobs:
           fi
           echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
 
-      - name: Display the environment
+      - name: Display environment
         run: |
-          echo "Current environment is: $ENVIRONMENT"
-          
-      # Add more steps as needed, like deployment, testing, etc.
+          echo "The current environment is: $ENVIRONMENT"
