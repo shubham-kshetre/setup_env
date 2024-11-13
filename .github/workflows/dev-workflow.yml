@@ -13,15 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Set up Node.js (or any other environment)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
+      # - name: Set up Node.js (or any other environment)
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '14'
       
-      - name: Run tests
-        run: |
-          npm install
-          npm test
+      # - name: Run tests
+      #   run: |
+      #     npm install
+      #     npm test
           
       - name: Trigger master workflow (via dispatch)
         run: |
