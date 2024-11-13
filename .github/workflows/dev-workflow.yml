@@ -26,6 +26,6 @@ jobs:
       - name: Trigger master workflow (via dispatch)
         run: |
           curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
             -d '{"ref": "master"}' \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/master-workflow.yml/dispatches
