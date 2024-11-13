@@ -1,40 +1,14 @@
-name: Branch-Specific Workflow
+name: Master Workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main      # Trigger this on main branch
-      - staging   # Trigger this on staging branch
-      - dev       # Trigger this on dev branch
+      - master
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v2
-
-      - name: Debugging GitHub Ref
-        run: echo "GitHub ref is: ${{ github.ref }}"
-
-      - name: Set environment based on branch
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "Deploying to production environment"
-            ENVIRONMENT="production"
-          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-            echo "Deploying to staging environment"
-            ENVIRONMENT="staging"
-          elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            echo "Deploying to development environment"
-            ENVIRONMENT="development"
-          else
-            echo "Unknown branch. Exiting."
-            exit 1
-          fi
-          echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
-
-      - name: Display environment
-        run: |
-          echo "The current environment is: $ENVIRONMENT"
