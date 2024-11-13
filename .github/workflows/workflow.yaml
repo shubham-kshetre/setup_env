@@ -1,42 +1,40 @@
-# .github/workflows/main.yml
-name: Run from Master for Dev Branch
+# .github/workflows/branch-environment.yml
+name: Branch-Specific Workflow
 
 on:
   push:
     branches:
-      - main       # Trigger from master
-  workflow_dispatch: # Allows manual trigger
+      - main      # Run this on main branch
+      - staging   # Run this on staging branch
+      - dev       # Run this on dev branch
 
 jobs:
-  run-for-dev:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check semantic apiVersion
+      - name: Set environment based on branch
         run: |
-          # Check Github variable for semantic version, if not available create one with 0.0.0 value
-          echo "Checking semantic version..."
-          # Add your logic for checking or setting the version
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "Deploying to production environment"
+            ENVIRONMENT="production"
+          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            echo "Deploying to staging environment"
+            ENVIRONMENT="staging"
+          elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            echo "Deploying to development environment"
+            ENVIRONMENT="development"
+          else
+            echo "Unknown branch. Exiting."
+            exit 1
+          fi
+          echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
 
-      - name: Install GitHub CLI
+      - name: Display the environment
         run: |
-          curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
-          sudo apt update
-          sudo apt install gh
-
-      - name: Authenticate GitHub CLI
-        run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
-
-      - name: Create repository variable
-        run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/actions/variables \
-            -f "name=apiVersion" -f "value=0.0.0"
-
+          echo "Current environment is: $ENVIRONMENT"
+          
+      # Add more steps as needed, like deployment, testing, etc.
