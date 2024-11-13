@@ -1,60 +1,42 @@
-name: Create Repository Variable
+# .github/workflows/main.yml
+name: Run from Master for Dev Branch
 
 on:
   push:
     branches:
-      - main
+      - main       # Trigger from master
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
-  create-variable:
+  run-for-dev:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout the code
+        uses: actions/checkout@v2
 
-    # # Step 2: Install GitHub CLI
-    # - name: Install GitHub CLI
-    #   run: |
-    #     curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
-    #     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
-    #     sudo apt update
-    #     sudo apt install gh
+      - name: Check semantic apiVersion
+        run: |
+          # Check Github variable for semantic version, if not available create one with 0.0.0 value
+          echo "Checking semantic version..."
+          # Add your logic for checking or setting the version
 
-    # # Step 3: Authenticate GitHub CLI
-    # - name: Authenticate GitHub CLI
-    #   run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
+          sudo apt update
+          sudo apt install gh
 
-    - name: Set environment based on branch
-      run: |
-        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-          echo "Deploying to production environment"
-          ENVIRONMENT="production"
+      - name: Authenticate GitHub CLI
+        run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
 
-        elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-          echo "Deploying to development environment"
-          ENVIRONMENT="development"
-          
-        else
-          echo "Unknown branch. Exiting."
-          exit 1
-        fi
-        echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
+      - name: Create repository variable
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/actions/variables \
+            -f "name=apiVersion" -f "value=0.0.0"
 
-    # Step 4: Check if the variable exists
-    # - name: Check if variable exists
-    #   id: check-variable
-    #   run: |
-    #     existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
-
-    # # Step 5: Conditionally create the variable
-    # - name: Create repository variable
-    #   if: env.create == 'true'
-    #   run: |
-    #     gh api \
-    #       --method POST \
-    #       -H "Accept: application/vnd.github+json" \
-    #       -H "X-GitHub-Api-Version: 2022-11-28" \
-    #       /repos/${{ github.repository }}/actions/variables \
-    #       -f "name=USERNAME" -f "value=myrepo" || echo "Variable already exists, skipping creation."
