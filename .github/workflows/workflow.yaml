@@ -28,10 +28,10 @@ jobs:
     
 
     # Step 4: Check if the variable exists
-    - name: Check if variable exists
-      id: check-variable
-      run: |
-        existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
+    # - name: Check if variable exists
+    #   id: check-variable
+    #   run: |
+    #     existing_vars=$(gh api /repos/${{ github.repository }}/actions/variables --jq '[.[] | .name]' | grep -w "USERNAME" || true)
 
     # # Step 5: Conditionally create the variable
     # - name: Create repository variable
