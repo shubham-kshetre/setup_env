@@ -14,18 +14,33 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Install GitHub CLI
-    - name: Install GitHub CLI
-      run: |
-        curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
-        sudo apt update
-        sudo apt install gh
+    # # Step 2: Install GitHub CLI
+    # - name: Install GitHub CLI
+    #   run: |
+    #     curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
+    #     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
+    #     sudo apt update
+    #     sudo apt install gh
 
-    # Step 3: Authenticate GitHub CLI
-    - name: Authenticate GitHub CLI
-      run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
-    
+    # # Step 3: Authenticate GitHub CLI
+    # - name: Authenticate GitHub CLI
+    #   run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
+
+    - name: Set environment based on branch
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "Deploying to production environment"
+          ENVIRONMENT="production"
+
+        elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+          echo "Deploying to development environment"
+          ENVIRONMENT="development"
+          
+        else
+          echo "Unknown branch. Exiting."
+          exit 1
+        fi
+        echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
 
     # Step 4: Check if the variable exists
     # - name: Check if variable exists
