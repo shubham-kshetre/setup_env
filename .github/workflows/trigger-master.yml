@@ -13,12 +13,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-            await octokit.rest.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'workflow.yaml', // The name of the workflow file on the master branch
-              ref: 'main', // Target branch to run this workflow
+              workflow_id: 'workflow.yaml', // Workflow file name on the master branch
+              ref: 'main', // Branch where the workflow should run
             });
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
