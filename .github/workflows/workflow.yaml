@@ -16,18 +16,6 @@ jobs:
       - name: 'Checkout'
         uses: 'actions/checkout@v2'
 
-      - name: Check for semantic apiVersion variable
-        id: check_var
-        run: |
-          # Check if the apiVersion variable exists
-          if gh api /repos/${{ github.repository }}/actions/variables/apiVersion &>/dev/null; then
-            echo "apiVersion variable already exists."
-            echo "exists=true" >> $GITHUB_ENV
-          else
-            echo "apiVersion variable does not exist."
-            echo "exists=false" >> $GITHUB_ENV
-          fi
-
       # Step 2: Install GitHub CLI
       - name: Install GitHub CLI
         run: |
@@ -39,6 +27,19 @@ jobs:
       # Step 3: Authenticate GitHub CLI
       - name: Authenticate GitHub CLI
         run: gh auth login --with-token <<< ${{ secrets.PAT_TOKEN }}
+
+
+      - name: Check for semantic apiVersion variable
+        id: check_var
+        run: |
+          # Check if the apiVersion variable exists
+          if gh api /repos/${{ github.repository }}/actions/variables/apiVersion &>/dev/null; then
+            echo "apiVersion variable already exists."
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "apiVersion variable does not exist."
+            echo "exists=false" >> $GITHUB_ENV
+          fi
 
       # Step 4: Conditionally create the repository variable if it does not exist
       - name: Create repository variable
