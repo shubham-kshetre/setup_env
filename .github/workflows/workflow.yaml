@@ -1,4 +1,4 @@
-name: Master Workflow
+name: 'Create Repository Variable'
 
 on:
   workflow_dispatch:
@@ -7,8 +7,37 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  setup-build-publish-deploy:
+    name: 'Setup, Build, Publish, and Deploy'
+    runs-on: 'ubuntu-latest'
+    environment: 'production'
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: 'Checkout'
+        uses: 'actions/checkout@v2'
+
+      - name: Check semantic apiVersion
+        run: |-
+          # Check Github variable for semantic version if not avaiable create one with 0.0.0 value
+
+      # Step 2: Install GitHub CLI
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli.repo | sudo tee /etc/apt/sources.list.d/github-cli.list
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C99B11DEB97541F0
+          sudo apt update
+          sudo apt install gh
+          
+      # Step 3: Authenticate GitHub CLI
+      - name: Authenticate GitHub CLI
+        run: gh auth login --with-token <<< ${{ secrets.PAT_TOKEN }}
+
+      # Step 4: Create the repository variable
+      - name: Create repository variable
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/actions/variables \
+            -f "name=apiVersion" -f "value=0.0.0"
