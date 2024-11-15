@@ -28,7 +28,7 @@ jobs:
           
       # Authenticate GitHub CLI
       - name: Authenticate GitHub CLI
-        run: gh auth login --with-token <<< ${{ secrets.PAT_TOKEN }}
+        run: gh auth login --with-token <<< ${{ secrets.TOKEN }}
 
       # Check if apiVersion exists
       - name: Check for apiVersion variable
