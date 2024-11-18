@@ -91,7 +91,7 @@ jobs:
             -f "value=${{ env.new_version }}"
 
       # Create a Git tag for the new version
-      - name: Create Git Tag
-        run: |
-          git tag "v${{ env.new_version }}"
-          git push origin "v${{ env.new_version }}"
+      # - name: Create Git Tag
+      #   run: |
+      #     git tag "v${{ env.new_version }}"
+      #     git push origin "v${{ env.new_version }}"
