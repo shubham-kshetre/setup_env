@@ -1,12 +1,21 @@
 name: 'Automatic Semver Versioning'
 
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+#     tags:
+#       - 'v*'  # Trigger workflow on version tag pushes (v1.2.3)
+
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'  # Trigger workflow on version tag pushes (v1.2.3)
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: false
+        default: 'main'
+
 
 jobs:
   setup-build-publish-deploy:
