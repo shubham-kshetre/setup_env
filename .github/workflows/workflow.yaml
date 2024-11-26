@@ -24,9 +24,24 @@ jobs:
     environment: 'production'
 
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@v2'
+      # - name: 'Checkout'
+      #   uses: 'actions/checkout@v2'
 
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Build Application
+        run: |
+          echo "Building application from ${{ github.event.inputs.branch }} branch"
+          # Add your build commands here
+
+      - name: Deploy Application
+        run: |
+          echo "Deploying application from ${{ github.event.inputs.branch }} branch"
+          # Add your deployment commands here
+#################################################################################################
       # Install GitHub CLI
       - name: Install GitHub CLI
         run: |
