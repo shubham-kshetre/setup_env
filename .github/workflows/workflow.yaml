@@ -37,10 +37,12 @@ jobs:
           echo "Building application from ${{ github.event.inputs.branch }} branch"
           # Add your build commands here
 
-      - name: Deploy Application
+      - name: Print branch
         run: |
           echo "Deploying application from ${{ github.event.inputs.branch }} branch"
           # Add your deployment commands here
+          git branch
+          
 #################################################################################################
       # Install GitHub CLI
       - name: Install GitHub CLI
